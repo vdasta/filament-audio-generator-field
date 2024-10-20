@@ -1,0 +1,10 @@
+.DS_Store
+.idea
+.vscode
+build
+composer.lock
+coverage
+docs
+node_modules
+vendor
+.not-used
