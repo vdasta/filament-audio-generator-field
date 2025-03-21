@@ -2,11 +2,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev:styles": "echo '/* filament-audio-generator-field.css is disabled */' > resources/dist/filament-audio-generator-field.css",
+    "dev:styles": "echo 'Using manually edited filament-audio-generator-field.css'",
     "dev:scripts": "node bin/build.js --dev",
-    "build:styles": "echo '/* filament-audio-generator-field.css is disabled */' > resources/dist/filament-audio-generator-field.css",
+    "build:styles": "echo 'Using manually edited filament-audio-generator-field.css'",
     "build:scripts": "node bin/build.js",
-    "purge": "echo '/* filament-audio-generator-field.css is disabled */' > resources/dist/filament-audio-generator-field.css",
+    "purge": "echo 'Using manually edited filament-audio-generator-field.css'",
     "dev": "npm-run-all --parallel dev:*",
     "build": "npm-run-all build:*"
   },
