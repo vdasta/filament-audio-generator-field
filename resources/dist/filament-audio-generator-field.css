@@ -26,4 +26,23 @@
   .custom-modal .btn-ag-edit:hover {
     background-color: #e05297 !important;
   }
-  
+  .custom-modal .grid {
+  display: grid;
+}
+
+.custom-modal .gap-8 {
+  gap: 2rem; /* Adjust according to your Tailwind config */
+}
+
+@media (min-width: 1024px) {
+  .custom-modal .lg\:grid-cols-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .custom-modal .lg\:col-span-3 {
+    grid-column: span 3 / span 3;
+  }
+  .custom-modal .lg\:col-span-2 {
+    grid-column: span 2 / span 2;
+  }
+}
+
