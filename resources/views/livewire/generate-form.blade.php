@@ -69,7 +69,8 @@
                             <div class="flex items-center justify-center h-full place-content-center gap-4"
                                 x-show="!isGenerating && !isEmpty"
                             >
-                                @include('filament-audio-generator-field::components.audio-player', ['url' => $url, 'language' => $language, 'voice' => $voice])
+                                @include('filament-audio-generator-field::components.audio-player', ['url' => $url, 'voice' => $voice])
+
                             </div>
                         </div>
                     </div>

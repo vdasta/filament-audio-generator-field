@@ -52,25 +52,14 @@ class GenerateForm extends Component implements HasForms
             'promptForm' => $this->makeForm()
                 ->columns(2)
                 ->schema([
-
-                    Select::make('language')
-                    ->translateLabel()
-                    ->label('filament-audio-generator-field::messages.form.fields.language')
-                    ->options(fn () => VoiceEnum::getLanguagesWithId())
-                    ->default($this->language)
-                    ->columnSpan(2)
-                    ->afterStateUpdated(fn (Set $set) => $set('voice', null))
-                    ->live(onBlur: true)
-                    ->required(),
-
                     Select::make('voice')
-                    ->translateLabel()
-                    ->label('filament-audio-generator-field::messages.form.fields.voice')
-                    ->options(fn (Get $get) => VoiceEnum::getVoicesByLanguageId($get('language')))
-                    ->default($this->voice)
-                    ->columnSpan(2)
-                    ->required(),
-
+                        ->translateLabel()
+                        ->label('filament-audio-generator-field::messages.form.fields.voice')
+                        ->options(VoiceEnum::getVoicesByLanguageId('openai')) // Hardcode OpenAI voice set
+                        ->default($this->voice)
+                        ->columnSpan(2)
+                        ->required(),
+                
                     Textarea::make('prompt')
                         ->translateLabel()
                         ->label('filament-audio-generator-field::messages.form.fields.prompt')
@@ -80,8 +69,8 @@ class GenerateForm extends Component implements HasForms
                         ->rules(['string', 'min:10'])
                         ->default($this->prompt)
                         ->required(),
-
                 ])
+                
 
         ];
 
@@ -89,50 +78,47 @@ class GenerateForm extends Component implements HasForms
 
     public function generateAudio(): void
     {
-
         $this->generatedAudios = [];
-
         $this->url = null;
-
+    
         $this->validate();
-
+    
         try {
-
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-                'User-Agent' => 'tiktok-epic-voice-globalelite2/1.0.0',
-                'Accept' => 'application/json',
-            ])->post($this->audioGenerator, [
-                'text' => $this->prompt,
-                'voice' => $this->voice,
-                'module_version' => 2,
-            ]);
-
-            $body = $response->body();
-
-            if (preg_match('/https?:\/\/[^\s]+/', $body, $matches)) {
-
-                $link = $matches[0];
-
-                $this->url = $link;
-
-                $this->generatedAudios[] = [
-                    'url' => $link
-                ];
-
-            } else {
-
-                $this->addError('prompt', __('filament-audio-generator-field::messages.form.errors.no-audios-generated'));
-
+            $response = Http::withToken(config('services.openai.secret'))
+                ->withHeaders([
+                    'Content-Type' => 'application/json',
+                ])
+                ->post('https://api.openai.com/v1/audio/speech', [
+                    'model' => 'tts-1',
+                    'input' => $this->prompt,
+                    'voice' => $this->voice,
+                    'response_format' => 'mp3',
+                ]);
+    
+            if (!$response->successful()) {
+                $this->addError('prompt', 'OpenAI API Error: ' . $response->body());
+                return;
             }
-
+    
+            $disk = $this->getDiskName();
+            $directory = $this->getDirectory();
+    
+            $filePath = (new DownloadAudioFromUrl())->saveToDisk(
+                $response->body(),
+                $disk,
+                $directory,
+                'mp3'
+            );
+    
+            $this->url = Storage::disk($disk)->url($filePath);
+            $this->generatedAudios[] = ['url' => $this->url];
+    
         } catch (\Exception $e) {
-
             $this->addError('prompt', $e->getMessage());
-
         }
-
     }
+    
+
 
     public function selectAudio(int $index): void
     {
