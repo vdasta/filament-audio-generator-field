@@ -86,8 +86,6 @@ class GenerateForm extends Component implements HasForms
     {
         $this->generatedAudios = [];
         $this->url = null;
-        
-
     
         $this->validate();
     
@@ -108,9 +106,11 @@ class GenerateForm extends Component implements HasForms
                 return;
             }
     
-            $disk = $this->disk ?? config('filesystems.default');
-            $directory = $this->directory;
+            // Always use 'public' disk for preview
+            $disk = 'public';
+            $directory = 'temp-audio';
     
+            // Save to temp-audio/ on public disk
             $filePath = (new DownloadAudioFromUrl())->saveToDisk(
                 $response->body(),
                 $disk,
@@ -118,6 +118,7 @@ class GenerateForm extends Component implements HasForms
                 'mp3'
             );
     
+            // Get accessible URL from public disk
             $this->url = Storage::disk($disk)->url($filePath);
             $this->generatedAudios[] = ['url' => $this->url];
     
@@ -125,9 +126,7 @@ class GenerateForm extends Component implements HasForms
             $this->addError('prompt', $e->getMessage());
         }
     }
-    
-
-
+ 
     public function selectAudio(int $index): void
     {
         $this->url = $this->generatedAudios[$index]['url'];
@@ -143,16 +142,23 @@ public function updateAudioGenerator(array $generator = []): void
 }
 
 
-    #[On('add-selected-audio')]
-    public function addSelected(string $statePath, string $disk): void
-    {
+#[On('add-selected-audio')]
+public function addSelected(string $statePath, string $disk): void
+{
+    $localPath = parse_url($this->url, PHP_URL_PATH); // Extract local file path
+    $localDisk = 'public';
+    $contents = Storage::disk($localDisk)->get($localPath);
 
-        $response = Http::get($this->url);
+    $finalFilename = basename($localPath);
+    $finalPath = $this->directory ? "{$this->directory}/{$finalFilename}" : $finalFilename;
 
-        $localFileName = (new DownloadAudioFromUrl())->saveToDisk($response->body(), $disk);
+    Storage::disk($disk)->put($finalPath, $contents);
 
-        $this->dispatch('generated-audio-uploaded', uuid: Str::uuid()->toString(), localFileName: $localFileName, statePath: $statePath);
+    // Cleanup temp file
+    Storage::disk($localDisk)->delete($localPath);
 
-    }
+    $this->dispatch('generated-audio-uploaded', uuid: Str::uuid()->toString(), localFileName: $finalPath, statePath: $statePath);
+}
+
 
 }
