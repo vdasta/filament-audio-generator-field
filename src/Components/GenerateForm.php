@@ -167,7 +167,7 @@ public function addSelected(string $statePath, string $disk): void
     // Clean up temp file
     Storage::disk($localDisk)->delete($path);
 
-    $this->dispatch('generated-audio-uploaded', uuid: Str::uuid()->toString(), localFileName: [$finalPath], statePath: $statePath);
+    $this->dispatch('generated-audio-uploaded', uuid: Str::uuid()->toString(), localFileName: $finalPath, statePath: $statePath);
 
 }
 
