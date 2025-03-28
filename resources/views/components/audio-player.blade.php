@@ -38,15 +38,13 @@
 
 <div class="bg-gray-800 text-white rounded-lg shadow-lg p-6 w-96">
 
-    @if (!is_null($language) && !is_null($voice))
-
-        <div class="text-center mb-4">
-            <h2 class="text-xl font-semibold">{{ Michaeld555\AudioGeneratorField\Enums\VoiceEnum::getLanguagesWithId()[$language] ?? '-' }}</h2>
-            <p class="text-gray-400">{{ Michaeld555\AudioGeneratorField\Enums\VoiceEnum::getVoicesByLanguageId($language)[$voice] ?? '-' }}</p>
-        </div>
-
-    @endif
-
+@if (!is_null($voice))
+    <div class="text-center mb-4">
+        <p class="text-gray-400">
+            {{ Michaeld555\AudioGeneratorField\Enums\VoiceEnum::getVoicesByLanguageId()[$voice] ?? '-' }}
+        </p>
+    </div>
+@endif
 
     <div class="mb-4">
         <input type="range" class="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer"

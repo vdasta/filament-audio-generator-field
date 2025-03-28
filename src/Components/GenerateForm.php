@@ -33,6 +33,10 @@ class GenerateForm extends Component implements HasForms
     public ?string $language = null;
 
     public ?string $voice = null;
+    
+    public ?string $disk = null;
+    
+    public ?string $directory = null;
 
     public function mount(): void
     {
@@ -80,6 +84,8 @@ class GenerateForm extends Component implements HasForms
     {
         $this->generatedAudios = [];
         $this->url = null;
+        
+
     
         $this->validate();
     
@@ -100,8 +106,8 @@ class GenerateForm extends Component implements HasForms
                 return;
             }
     
-            $disk = $this->getDiskName();
-            $directory = $this->getDirectory();
+            $disk = $this->disk ?? config('filesystems.default');
+            $directory = $this->directory;
     
             $filePath = (new DownloadAudioFromUrl())->saveToDisk(
                 $response->body(),
@@ -126,18 +132,14 @@ class GenerateForm extends Component implements HasForms
     }
 
     #[On('update-audio-generator')]
-    public function updateAudioGenerator(): void
-    {
+public function updateAudioGenerator(array $generator = []): void
+{
+    $this->disk = $generator['disk'] ?? config('filesystems.default');
+    $this->directory = $generator['directory'] ?? null;
 
-        $defaultFields = [];
+    $this->getForm('promptForm')?->fill([]);
+}
 
-        $this->getForm('promptForm')?->fill(
-            array_merge(
-                $defaultFields
-            )
-        );
-
-    }
 
     #[On('add-selected-audio')]
     public function addSelected(string $statePath, string $disk): void

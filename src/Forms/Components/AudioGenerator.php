@@ -41,11 +41,17 @@ class AudioGenerator extends FileUpload
         $this->hintAction(
 
             Action::make('generateNewAudio')
-                ->label(Str::ucfirst(__('filament-audio-generator-field::messages.labels.generate-audio')))
-                ->icon('heroicon-m-sparkles')
-                ->visible($this->audioGenerator)
-                ->action(fn (LivewireComponent $livewire) => $livewire->dispatch('open-modal', id: 'generate-an-audio', statePath: $this->getStatePath(), disk: $this->getDiskName(), generator: null))
-
+    ->label(Str::ucfirst(__('filament-audio-generator-field::messages.labels.generate-audio')))
+    ->icon('heroicon-m-sparkles')
+    ->visible($this->audioGenerator)
+    ->action(fn (LivewireComponent $livewire) => $livewire->dispatch('open-modal', [
+        'id' => 'generate-an-audio',
+        'statePath' => $this->getStatePath(),
+        'generator' => [
+            'disk' => $this->getDiskName(),
+            'directory' => $this->getDirectory(),
+        ],
+    ]))
         );
 
         if (!static::$isComponentRegistered) {
