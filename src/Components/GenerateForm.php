@@ -15,6 +15,8 @@ use Livewire\Component;
 use Michaeld555\AudioGeneratorField\Services\DownloadAudioFromUrl;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+
 
 class GenerateForm extends Component implements HasForms
 {
