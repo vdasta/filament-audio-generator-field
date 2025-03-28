@@ -160,7 +160,7 @@ public function addSelected(string $statePath, string $disk): void
     $contents = Storage::disk($localDisk)->get($path);
 
     $finalFilename = basename($path);
-    $finalPath = $this->directory ? "{$this->directory}{$finalFilename}" : $finalFilename;
+    $finalPath = $this->directory ? "{$this->directory}/{$finalFilename}" : $finalFilename;
 
     Storage::disk($disk)->put($finalPath, $contents);
 
