@@ -4,6 +4,10 @@
         init() {
             let setGeneratedAudioListener = addEventListener('set-generated-audio', (event) => {
     if (event.detail.statePath === '{{ $getStatePath() }}') {
+
+    console.log('Setting field state:', {
+                [event.detail.uuid]: event.detail.localFileName
+            });
         $wire.set('{{ $getStatePath() }}', event.detail.localFileName);
     }
 });
