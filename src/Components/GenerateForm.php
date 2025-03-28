@@ -40,6 +40,8 @@ class GenerateForm extends Component implements HasForms
     
     public ?string $directory = null;
 
+    public ?string $localPath = null;
+
     public function mount(): void
     {
         //
@@ -117,12 +119,12 @@ class GenerateForm extends Component implements HasForms
                 $directory,
                 'mp3'
             );
-    
+
             // Get accessible URL from public disk
             $this->url = Storage::disk($disk)->url($filePath);
             $this->generatedAudios[] = ['url' => $this->url, 'path' => $filePath];
             $this->localPath = $filePath;
-            
+          
     
         } catch (\Exception $e) {
             $this->addError('prompt', $e->getMessage());
@@ -147,7 +149,7 @@ public function updateAudioGenerator(array $generator = []): void
 #[On('add-selected-audio')]
 public function addSelected(string $statePath, string $disk): void
 {
-    $localDisk = 'local';
+    $localDisk = 'public';
     $path = $this->localPath ?? null;
 
     if (!$path || !Storage::disk($localDisk)->exists($path)) {
