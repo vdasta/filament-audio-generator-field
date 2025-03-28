@@ -160,14 +160,15 @@ public function addSelected(string $statePath, string $disk): void
     $contents = Storage::disk($localDisk)->get($path);
 
     $finalFilename = basename($path);
-    $finalPath = $this->directory ? "{$this->directory}/{$finalFilename}" : $finalFilename;
+    $finalPath = $this->directory ? "{$this->directory}{$finalFilename}" : $finalFilename;
 
     Storage::disk($disk)->put($finalPath, $contents);
 
     // Clean up temp file
     Storage::disk($localDisk)->delete($path);
 
-    $this->dispatch('generated-audio-uploaded', uuid: Str::uuid()->toString(), localFileName: $finalPath, statePath: $statePath);
+    $this->dispatch('generated-audio-uploaded', uuid: Str::uuid()->toString(), localFileName: [$finalPath], statePath: $statePath);
+
 }
 
 
