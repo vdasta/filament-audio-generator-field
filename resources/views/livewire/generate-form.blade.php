@@ -1,14 +1,17 @@
 <div x-data="{
     init() {
             let openModalListener = addEventListener('open-modal', (event) => {
-                if (event.detail.id === 'generate-an-audio') {
-                    $store.generateAudio.statePath = event.detail.statePath ?? null;
-                    $store.generateAudio.disk = event.detail.disk ?? null;
-                    $store.generateAudio.generator = event.detail.generator ?? null;
+    if (event.detail.id === 'generate-an-audio') {
+        const generator = event.detail.generator ?? {};
 
-                    $dispatch('update-audio-generator', { generator: event.detail.generator });
-                }
-            });
+        $store.generateAudio.statePath = event.detail.statePath ?? null;
+        $store.generateAudio.disk = generator.disk ?? null;
+        $store.generateAudio.generator = generator;
+
+        $dispatch('update-audio-generator', { generator });
+    }
+});
+
 
             let generatedAudioUploadedListener = addEventListener('generated-audio-uploaded', (event) => {
                 $dispatch('close-modal', { id: 'generate-an-audio' });
