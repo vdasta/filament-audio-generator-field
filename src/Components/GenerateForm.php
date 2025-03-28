@@ -120,7 +120,9 @@ class GenerateForm extends Component implements HasForms
     
             // Get accessible URL from public disk
             $this->url = Storage::disk($disk)->url($filePath);
-            $this->generatedAudios[] = ['url' => $this->url];
+            $this->generatedAudios[] = ['url' => $this->url, 'path' => $filePath];
+            $this->localPath = $filePath;
+            
     
         } catch (\Exception $e) {
             $this->addError('prompt', $e->getMessage());
@@ -145,20 +147,27 @@ public function updateAudioGenerator(array $generator = []): void
 #[On('add-selected-audio')]
 public function addSelected(string $statePath, string $disk): void
 {
-    $localPath = parse_url($this->url, PHP_URL_PATH); // Extract local file path
-    $localDisk = 'public';
-    $contents = Storage::disk($localDisk)->get($localPath);
+    $localDisk = 'local';
+    $path = $this->localPath ?? null;
 
-    $finalFilename = basename($localPath);
+    if (!$path || !Storage::disk($localDisk)->exists($path)) {
+        $this->addError('prompt', "Temporary audio file not found.");
+        return;
+    }
+
+    $contents = Storage::disk($localDisk)->get($path);
+
+    $finalFilename = basename($path);
     $finalPath = $this->directory ? "{$this->directory}/{$finalFilename}" : $finalFilename;
 
     Storage::disk($disk)->put($finalPath, $contents);
 
-    // Cleanup temp file
-    Storage::disk($localDisk)->delete($localPath);
+    // Clean up temp file
+    Storage::disk($localDisk)->delete($path);
 
     $this->dispatch('generated-audio-uploaded', uuid: Str::uuid()->toString(), localFileName: $finalPath, statePath: $statePath);
 }
+
 
 
 }
