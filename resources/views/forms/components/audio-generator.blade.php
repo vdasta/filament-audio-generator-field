@@ -3,14 +3,12 @@
     <div class="grid grid-cols-1 gap-6" x-data="{
         init() {
             let setGeneratedAudioListener = addEventListener('set-generated-audio', (event) => {
-    if (event.detail.statePath === '{{ $getStatePath() }}') {
-
-    console.log('Setting field state:', {
-                [event.detail.uuid]: event.detail.localFileName
+                if (event.detail.statePath === '{{ $getStatePath() }}') {
+                    $wire.set('{{ $getStatePath() }}', {
+                        [event.detail.uuid]: event.detail.localFileName
+                    });
+                }
             });
-        $wire.set('{{ $getStatePath() }}', event.detail.localFileName);
-    }
-});
         },
     }">
         <div class="">

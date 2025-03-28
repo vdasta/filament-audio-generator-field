@@ -8,7 +8,7 @@ return [
     'form' => [
         'fields' => [
             'prompt' => 'Prompt',
-            'prompt-placeholder' => 'example: `I love my dog, his name is Bob`. Don\'t forget to use correct accentuation.',
+            'prompt-placeholder' => 'example: `Thanks for calling! Please wait while I connect you.',
 
             'language' => 'Language',
             'language-hint' => 'Select the audio language.',
@@ -24,7 +24,7 @@ return [
     'modals' => [
         'generate-an-audio' => [
             'title' => 'Audio Generation',
-            'description' => 'Describe in detail the audio you want to generate.<br />Please wait while the audio is being generated.',
+            'description' => 'Enter the text you would like to have spoken for your greeting.<br />Please wait while the audio is being generated.',
             'generate' => 'Generate',
             'generating' => 'Generating...',
             'add-generated' => 'Add generated audio',

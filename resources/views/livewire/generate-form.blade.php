@@ -17,7 +17,13 @@
                 $dispatch('close-modal', { id: 'generate-an-audio' });
                 this.isDownloading = false;
 
-                $dispatch('set-generated-audio', { uuid: event.detail.uuid, localFileName: event.detail.localFileName, statePath: event.detail.statePath });
+                const data = event.detail[0]; // It's an array of one object
+                $dispatch('set-generated-audio', {
+                    uuid: data.uuid,
+                    localFileName: data.localFileName, // Use .path if that's what PHP is sending
+                    statePath: data.statePath,
+                });
+
             });
         },
 

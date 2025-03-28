@@ -28,7 +28,7 @@ class GenerateForm extends Component implements HasForms
 
     public ?string $generatorName = null;
 
-    public string $audioGenerator = 'https://neos-tts.apithis.net/v1/generate';
+    public string $audioGenerator = null;
 
     public ?string $prompt = null;
 
@@ -104,7 +104,7 @@ class GenerateForm extends Component implements HasForms
                 ]);
     
             if (!$response->successful()) {
-                $this->addError('prompt', 'OpenAI API Error: ' . $response->body());
+                $this->addError('prompt', 'Error: ' . $response->body());
                 return;
             }
     
@@ -167,9 +167,21 @@ public function addSelected(string $statePath, string $disk): void
     // Clean up temp file
     Storage::disk($localDisk)->delete($path);
 
-    $this->dispatch('generated-audio-uploaded', uuid: Str::uuid()->toString(), localFileName: $finalPath, statePath: $statePath);
+    //Update the internal Livewire state with the final path and URL
+    $this->url = Storage::disk($disk)->url($finalPath);
+    $this->generatedAudios = [
+        ['url' => $this->url, 'path' => $finalPath],
+    ];
 
+    $this->dispatch('generated-audio-uploaded', [
+        'uuid' => Str::uuid()->toString(),
+        'statePath' => $statePath,
+        'localFileName' => $finalPath, // This is the R2 path, like greetings/uuid.mp3
+    ]);
+    
 }
+
+
 
 
 
