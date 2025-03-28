@@ -90,25 +90,6 @@ class AudioGenerator extends FileUpload
         return 'filament-audio-generator-field::blank-field-wrapper';
 
     }
-    public function getUploadedFiles(): array
-{
-    $state = $this->getState();
-
-    // Normalize: if the state is a string (e.g., 'greetings/uuid.mp3'), treat it as a single-element array
-    if (is_string($state)) {
-        $state = [$state];
-    }
-
-    if (! is_array($state)) {
-        return [];
-    }
-
-    return array_map(function ($path) {
-        return [
-            'name' => basename($path),
-            'path' => $path,
-        ];
-    }, $state);
-}
+  
 
 }
