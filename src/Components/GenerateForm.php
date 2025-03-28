@@ -28,7 +28,7 @@ class GenerateForm extends Component implements HasForms
 
     public ?string $generatorName = null;
 
-    public string $audioGenerator = null;
+    public string $audioGenerator = "";
 
     public ?string $prompt = null;
 
