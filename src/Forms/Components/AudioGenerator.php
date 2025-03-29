@@ -90,8 +90,10 @@ class AudioGenerator extends FileUpload
         return 'filament-audio-generator-field::blank-field-wrapper';
 
     }
-    public function dehydrateStateUsing(mixed $state): mixed
+    public function getDehydratedState(): mixed
     {
+        $state = parent::getState();
+    
         // If it's already a string (e.g., "greetings/abc.mp3"), just return it
         if (is_string($state)) {
             return $state;
@@ -104,6 +106,7 @@ class AudioGenerator extends FileUpload
     
         return $state;
     }
+    
     
 
 }
