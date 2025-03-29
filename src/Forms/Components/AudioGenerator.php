@@ -107,6 +107,20 @@ class AudioGenerator extends FileUpload
         return $state;
     }
     
+    public function getState(): mixed
+{
+    $state = parent::getState();
+
+    // If the state is already a string (e.g., a path), fake a file upload array
+    if (is_string($state)) {
+        return [
+            Str::uuid()->toString() => $state,
+        ];
+    }
+
+    return $state;
+}
+
     
 
 }
