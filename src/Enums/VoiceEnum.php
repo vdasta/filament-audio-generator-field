@@ -2,17 +2,6 @@
 
 namespace Michaeld555\AudioGeneratorField\Enums;
 
-alloy
-ash
-ballad
-coral
-echo
-fable
-onyx
-nova
-sage
-shimmer
-
 enum VoiceEnum: string
 {
     case ALLOY = 'alloy';
