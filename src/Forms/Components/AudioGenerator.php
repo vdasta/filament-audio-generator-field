@@ -90,6 +90,20 @@ class AudioGenerator extends FileUpload
         return 'filament-audio-generator-field::blank-field-wrapper';
 
     }
-  
+    public function dehydrateStateUsing(mixed $state): mixed
+    {
+        // If it's already a string (e.g., "greetings/abc.mp3"), just return it
+        if (is_string($state)) {
+            return $state;
+        }
+    
+        // If it's an array with one file, extract its path
+        if (is_array($state) && count($state) === 1) {
+            return reset($state); // returns the first value in the array
+        }
+    
+        return $state;
+    }
+    
 
 }

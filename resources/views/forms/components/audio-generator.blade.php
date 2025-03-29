@@ -5,12 +5,7 @@
             let setGeneratedAudioListener = addEventListener('set-generated-audio', (event) => {
                 if (event.detail.statePath === '{{ $getStatePath() }}') {
                     $wire.set('{{ $getStatePath() }}', {
-                        [event.detail.uuid]: {
-                            name: event.detail.localFileName.split('/').pop(),
-                            path: event.detail.localFileName,
-                            size: 0,
-                            type: 'audio/mpeg',
-                        }
+                        [event.detail.uuid]: event.detail.localFileName
                     });
                 }
             });
