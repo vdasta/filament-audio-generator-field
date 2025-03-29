@@ -97,8 +97,9 @@ class GenerateForm extends Component implements HasForms
                     'Content-Type' => 'application/json',
                 ])
                 ->post('https://api.openai.com/v1/audio/speech', [
-                    'model' => 'tts-1',
+                    'model' => 'gpt-4o-mini-tts',
                     'input' => $this->prompt,
+                    'instructions' => 'Speak in a cheerful and positive tone.',
                     'voice' => $this->voice,
                     'response_format' => 'mp3',
                 ]);
